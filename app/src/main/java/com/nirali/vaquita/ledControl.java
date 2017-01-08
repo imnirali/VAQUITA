@@ -9,6 +9,7 @@ import android.bluetooth.BluetoothSocket;
 import android.content.Intent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -24,8 +25,9 @@ import java.util.UUID;
 public class ledControl extends ActionBarActivity {
 
     Button btnOn, btnOff, btnDis;
-    SeekBar brightness;
-    TextView lumn;
+    ImageView openDoor, closeDoor;
+   // SeekBar brightness;
+    //TextView lumn;
     String address = null;
     private ProgressDialog progress;
     BluetoothAdapter myBluetooth = null;
@@ -49,8 +51,10 @@ public class ledControl extends ActionBarActivity {
         btnOn = (Button)findViewById(R.id.button2);
         btnOff = (Button)findViewById(R.id.button3);
         btnDis = (Button)findViewById(R.id.button4);
-        brightness = (SeekBar)findViewById(R.id.seekBar);
-        lumn = (TextView)findViewById(R.id.lumn);
+        openDoor = (ImageView)findViewById(R.id.opendoorimage);
+        closeDoor = (ImageView)findViewById(R.id.closedoorimage);
+        //brightness = (SeekBar)findViewById(R.id.seekBar);
+        //lumn = (TextView)findViewById(R.id.lumn);
 
         new ConnectBT().execute(); //Call the class to connect
 
@@ -81,7 +85,7 @@ public class ledControl extends ActionBarActivity {
             }
         });
 
-        brightness.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+      /*  brightness.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 if (fromUser==true)
@@ -107,7 +111,7 @@ public class ledControl extends ActionBarActivity {
             public void onStopTrackingTouch(SeekBar seekBar) {
 
             }
-        });
+        });*/
     }
 
     private void Disconnect()
@@ -131,7 +135,9 @@ public class ledControl extends ActionBarActivity {
         {
             try
             {
-                btSocket.getOutputStream().write("TF".toString().getBytes());
+                btSocket.getOutputStream().write("0".toString().getBytes());
+                openDoor.setVisibility(View.INVISIBLE);
+                closeDoor.setVisibility(View.VISIBLE);
             }
             catch (IOException e)
             {
@@ -146,7 +152,9 @@ public class ledControl extends ActionBarActivity {
         {
             try
             {
-                btSocket.getOutputStream().write("TO".toString().getBytes());
+                btSocket.getOutputStream().write("1".toString().getBytes());
+                openDoor.setVisibility(View.VISIBLE);
+                closeDoor.setVisibility(View.INVISIBLE);
             }
             catch (IOException e)
             {

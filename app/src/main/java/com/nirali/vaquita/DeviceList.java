@@ -15,11 +15,13 @@ import android.bluetooth.BluetoothDevice;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
+
 import java.util.ArrayList;
 import java.util.Set;
 
 
-public class DeviceList extends ActionBarActivity
+public class DeviceList extends ActionBarActivity implements View.OnClickListener
 {
     //widgets
     Button btnPaired;
@@ -29,6 +31,7 @@ public class DeviceList extends ActionBarActivity
     private Set<BluetoothDevice> pairedDevices;
     public static String EXTRA_ADDRESS = "device_address";
 
+    private FirebaseAuth mAuth;
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -38,7 +41,10 @@ public class DeviceList extends ActionBarActivity
         //Calling widgets
         btnPaired = (Button)findViewById(R.id.button);
         devicelist = (ListView)findViewById(R.id.listView);
+        findViewById(R.id.sign_out_button).setOnClickListener(this);
+        btnPaired.setVisibility(View.GONE);
 
+        mAuth = FirebaseAuth.getInstance();
         //if the device has bluetooth
         myBluetooth = BluetoothAdapter.getDefaultAdapter();
 
@@ -57,13 +63,13 @@ public class DeviceList extends ActionBarActivity
                 startActivityForResult(turnBTon,1);
         }
 
-        btnPaired.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v)
-            {
+//        btnPaired.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v)
+//            {
                 pairedDevicesList();
-            }
-        });
+//            }
+//        });
 
     }
 
@@ -76,7 +82,9 @@ public class DeviceList extends ActionBarActivity
         {
             for(BluetoothDevice bt : pairedDevices)
             {
-                list.add(bt.getName() + "\n" + bt.getAddress()); //Get the device's name and the address
+//                bt.getName()
+//                bt.getAddress())
+                list.add("Capstone Lab" + "\n" + "ITB 126     " + bt.getAddress()); //Get the device's name and the address
             }
         }
         else
@@ -115,6 +123,13 @@ public class DeviceList extends ActionBarActivity
         getMenuInflater().inflate(R.menu.menu_device_list, menu);
         return true;
     }
+    private void signOut() {
+        mAuth.signOut();
+//        updateUI(null);
+        Intent i = new Intent(getApplicationContext(),EmailPasswordActivity.class);
+        startActivity(i);
+        setContentView(R.layout.activity_email_password);
+    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -129,5 +144,13 @@ public class DeviceList extends ActionBarActivity
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onClick(View view) {
+        int i = view.getId();
+        if (i == R.id.sign_out_button) {
+            signOut();
+        }
     }
 }

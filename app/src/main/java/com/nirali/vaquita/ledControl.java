@@ -134,7 +134,12 @@ public class ledControl extends ActionBarActivity implements View.OnClickListene
         {
             try
             {
+                turnOffLed();
                 btSocket.close(); //close connection
+                Intent i = new Intent(getApplicationContext(),DeviceList.class);
+                startActivity(i);
+                setContentView(R.layout.activity_device_list);
+
             }
             catch (IOException e)
             { msg("Error");}

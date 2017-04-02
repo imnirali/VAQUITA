@@ -55,6 +55,8 @@ public class EmailPasswordActivity extends ActionBarActivity implements
         findViewById(R.id.sign_out_button).setOnClickListener(this);
         findViewById(R.id.verify_email_button).setOnClickListener(this);
 
+        mStatusTextView.setText(null);
+        mDetailTextView.setText(null);
         // [START initialize_auth]
         mAuth = FirebaseAuth.getInstance();
         // [END initialize_auth]
@@ -246,7 +248,7 @@ public class EmailPasswordActivity extends ActionBarActivity implements
             startActivity(i);
             setContentView(R.layout.activity_device_list);
         } else {
-            mStatusTextView.setText("signed_out");
+            mStatusTextView.setText(null);
             mDetailTextView.setText(null);
 
             findViewById(R.id.email_password_buttons).setVisibility(View.VISIBLE);

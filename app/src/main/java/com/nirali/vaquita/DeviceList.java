@@ -84,7 +84,7 @@ public class DeviceList extends ActionBarActivity implements View.OnClickListene
             {
 //                bt.getName()
 //                bt.getAddress())
-                list.add("Capstone Lab" + "\n" + "ITB 126     " + bt.getAddress()); //Get the device's name and the address
+                list.add("Capstone Lab" + "\n" + "ITB 126" + "\n" + bt.getAddress()); //Get the device's name and the address
             }
         }
         else

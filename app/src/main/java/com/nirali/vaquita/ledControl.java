@@ -1,5 +1,6 @@
 package com.nirali.vaquita;
 
+
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -18,13 +19,15 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.os.AsyncTask;
 
+import com.google.firebase.auth.FirebaseAuth;
+
 import java.io.IOException;
 import java.util.UUID;
 
 
-public class ledControl extends ActionBarActivity {
+public class ledControl extends ActionBarActivity implements View.OnClickListener {
 
-    Button btnOn, btnOff, btnDis;
+    Button btnOn, btnOff, btnDis, btnSignout;
     ImageView openDoor, closeDoor;
    // SeekBar brightness;
     //TextView lumn;
@@ -35,6 +38,8 @@ public class ledControl extends ActionBarActivity {
     private boolean isBtConnected = false;
     //SPP UUID. Look for it
     static final UUID myUUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
+
+    private FirebaseAuth mAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -51,6 +56,7 @@ public class ledControl extends ActionBarActivity {
         btnOn = (Button)findViewById(R.id.button2);
         btnOff = (Button)findViewById(R.id.button3);
         btnDis = (Button)findViewById(R.id.button4);
+        btnSignout = (Button)findViewById(R.id.button5);
         openDoor = (ImageView)findViewById(R.id.opendoorimage);
         closeDoor = (ImageView)findViewById(R.id.closedoorimage);
         //brightness = (SeekBar)findViewById(R.id.seekBar);
@@ -84,6 +90,14 @@ public class ledControl extends ActionBarActivity {
                 Disconnect(); //close connection
             }
         });
+
+//        btnSignout.setOnClickListener(new View.OnClickListener()
+//        {
+//            @Override
+//            public void onClick(View v){
+//                signOut(); // signs you out
+//            }
+//        });
 
       /*  brightness.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -128,14 +142,21 @@ public class ledControl extends ActionBarActivity {
         finish(); //return to the first layout
 
     }
-
+    private void signOut() {
+        Disconnect();
+        mAuth.signOut();
+//        updateUI(null);
+        Intent i = new Intent(getApplicationContext(),EmailPasswordActivity.class);
+        startActivity(i);
+        setContentView(R.layout.activity_email_password);
+    }
     private void turnOffLed()
     {
         if (btSocket!=null)
         {
             try
             {
-                btSocket.getOutputStream().write("0".toString().getBytes());
+                btSocket.getOutputStream().write("63".toString().getBytes());
                 openDoor.setVisibility(View.INVISIBLE);
                 closeDoor.setVisibility(View.VISIBLE);
             }
@@ -155,6 +176,7 @@ public class ledControl extends ActionBarActivity {
                 btSocket.getOutputStream().write("1".toString().getBytes());
                 openDoor.setVisibility(View.VISIBLE);
                 closeDoor.setVisibility(View.INVISIBLE);
+
             }
             catch (IOException e)
             {
@@ -189,6 +211,14 @@ public class ledControl extends ActionBarActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onClick(View view) {
+        int i = view.getId();
+        if (i == R.id.button5) {
+            signOut();
+        }
     }
 
     private class ConnectBT extends AsyncTask<Void, Void, Void>  // UI thread
@@ -235,6 +265,7 @@ public class ledControl extends ActionBarActivity {
             {
                 msg("Connected.");
                 isBtConnected = true;
+                turnOnLed();
             }
             progress.dismiss();
         }
